@@ -11,6 +11,8 @@ $ composer require yhbyun/nova-kakao-address
 
 `.env` 파일에 카카오 API 키 추가
 
+[카카오 API 키 발급](https://developers.kakao.com/apps)
+
 ```
 KAKAO_API_KEY=############################
 ```
