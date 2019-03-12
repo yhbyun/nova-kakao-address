@@ -99,12 +99,16 @@ Laravel Nova 필드는 한개의 폼 값 만을 반환하기 때문에 다음과
 
 ```json
 {
-    address: "주소",
-    latitude: "위도",
-    longitude: "경도"
+    "address": "주소",
+    "latitude": "위도",
+    "longitude": "경도"
 }
 ```
 
 해당 모델의 `creating`, 'updating` 이벤트 시 address 속성에 이 json 값이 들어 있개 되고,
 이 값에서 실제 주소, 위도, 경도 값을 구해서 해당 속성을 갱신한다.
 
+
+## 화면켭쳐
+
+![](https://github.com/yhbyun/resources/raw/master/nova-kakao-address/map.png)
