@@ -141,6 +141,9 @@ export default {
                         let address = !!results[0].road_address ? `[도로명 주소] ${results[0].road_address.address_name}, ` : '';
                         address += `[지번 주소] ${results[0].address.address_name}`;
                         this.addressData.address = address;
+                        this.value = !!results[0].road_address ? results[0].road_address.address_name : results[0].address.address_name;
+                        this.useAddress = true;
+                        this.useLatLng = true;
                     }
                 });
             });
@@ -165,9 +168,12 @@ export default {
             this.geocoder.addressSearch(this.value, (results, status) => {
                 if (status === daum.maps.services.Status.OK) {
                     if (results[0]) {
+                        let address = !!results[0].road_address ? `[도로명 주소] ${results[0].road_address.address_name}, ` : '';
+                        address += `[지번 주소] ${results[0].address.address_name}`;
+
                         this.addressData.latitude = results[0].y;
                         this.addressData.longitude = results[0].x;
-                        this.addressData.address = results[0].address_name;
+                        this.addressData.address = address;
                         this.useAddress = true;
                         this.useLatLng = true;
 
