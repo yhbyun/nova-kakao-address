@@ -1,6 +1,6 @@
 {
     "name": "yhbyun/nova-kakao-address",
-    "description": "A Laravel Nova field.",
+    "description": "A Laravel Nova Kakao Address field.",
     "keywords": [
         "laravel",
         "nova"
