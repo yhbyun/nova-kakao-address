@@ -19,7 +19,7 @@ KAKAO_API_KEY=############################
 
 ## 사용방법
 
-`Post` 테이블에 `address`, `latitide`, `longitude` 컬럼이 있다고 가정하자.
+데이타베이스 `post` 테이블에 `address`, `latitide`, `longitude`, `address_1level`, `address_2level`, `address_3level`, `address_others`  컬럼이 있다고 가정하자.
 
 app/post.php
 ```php
@@ -31,8 +31,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    use Searchable;
-
     public static function boot()
     {
         parent::boot();
@@ -41,6 +39,10 @@ class Post extends Model
             if ($model->address) {
                 $data = json_decode($model->address);
                 $model->address = $data->address;
+                $model->address_1level = $data->address_1level;
+                $model->address_2level = $data->address_2level;
+                $model->address_3level = $data->address_3level;
+                $model->address_others = $data->address_others;
                 $model->latitude = $data->latitude;
                 $model->longitude = $data->longitude;
             }
@@ -52,10 +54,18 @@ class Post extends Model
             if ($model->address) {
                 $data = json_decode($model->address);
                 $model->address = $data->address;
+                $model->address_1level = $data->address_1level;
+                $model->address_2level = $data->address_2level;
+                $model->address_3level = $data->address_3level;
+                $model->address_others = $data->address_others;
                 $model->latitude = $data->latitude;
                 $model->longitude = $data->longitude;
             } else {
                 $model->address = null;
+                $model->address_1level = null;
+                $model->address_2level = null;
+                $model->address_3level = null;
+                $model->address_others = null
                 $model->latitude = null;
                 $model->longitude = null;
             }
@@ -99,16 +109,20 @@ Laravel Nova 필드는 한개의 폼 값 만을 반환하기 때문에 다음과
 
 ```json
 {
-    "address": "주소",
+    "address": "전체주소",
+    "address_1level": "시도",
+    "address_2level": "구",
+    "address_3level": "동",
+    "address_others": "나머지 주소",
     "latitude": "위도",
     "longitude": "경도"
 }
 ```
 
-해당 모델의 `creating`, 'updating` 이벤트 시 address 속성에 이 json 값이 들어 있개 되고,
-이 값에서 실제 주소, 위도, 경도 값을 구해서 해당 속성을 갱신한다.
+해당 모델의 `creating`, 'updating` 이벤트 시 address 속성에 이 json 데이터가 들어 있게 되고,
+이 데이터로부터 전체주소, 시도, 구, 동, 나머지 주소, 위도, 경도 값을 구해서 해당 속성을 갱신한다.
 
 
 ## 화면켭쳐
 
-![](https://github.com/yhbyun/resources/raw/master/nova-kakao-address/map.png)
+![](https://github.com/yhbyun/resources/raw/master/nova-kakao-address/map2.png)
