@@ -59,7 +59,58 @@
             </div>
 
             <div class="kakao-map w-full" :id="mapName"></div>
-            <div class="w-full py-4"><span class="text-80">주소:</span> {{ addressData.address }}</div>
+            <div class="w-full py-4"><span class="text-80">전체 주소:</span> {{ addressData.address }}</div>
+
+            <div class="flex flex-wrap w-full pt-4">
+                <div class="flex w-1/4">
+                    <div class="w-1/3">
+                        <label class="block text-80 text-right pt-2 mr-1" for="1level">시도</label>
+                    </div>
+                    <div class="w-2/3">
+                        <input id="1level" type="text"
+                            class="w-full form-control form-input form-input-bordered"
+                            :class="errorClasses"
+                            v-model="addressData.address_1level"
+                        />
+                    </div>
+                </div>
+                <div class="flex w-1/4">
+                    <div class="w-1/3">
+                        <label class="block text-80 text-right pt-2 mr-1" for="2level">구</label>
+                    </div>
+                    <div class="w-2/3">
+                        <input id="2level" type="text"
+                            class="w-full form-control form-input form-input-bordered"
+                            :class="errorClasses"
+                            v-model="addressData.address_2level"
+                        />
+                    </div>
+                </div>
+                <div class="flex w-1/4">
+                    <div class="w-1/3">
+                        <label class="block text-80 text-right pt-2 mr-1" for="3level">동</label>
+                    </div>
+                    <div class="w-2/3">
+                        <input id="3level" type="text"
+                            class="w-full form-control form-input form-input-bordered"
+                            :class="errorClasses"
+                            v-model="addressData.address_3level"
+                        />
+                    </div>
+                </div>
+                <div class="flex w-1/4">
+                    <div class="w-1/3">
+                        <label class="block text-80 text-right pt-2 mr-1" for="others">번지</label>
+                    </div>
+                    <div class="w-2/3">
+                        <input id="others" type="text"
+                            class="w-full form-control form-input form-input-bordered"
+                            :class="errorClasses"
+                            v-model="addressData.address_others"
+                        />
+                    </div>
+                </div>
+            </div>
 
             <p v-if="hasError" class="my-2 text-danger">
                 {{ firstError }}
@@ -90,7 +141,15 @@ export default {
         return {
             mapName: this.name + "-map",
             address: '',
-            addressData: {latitude: this.field.lat || 33.450701, longitude: this.field.lng || 126.570667, address: ''},
+            addressData: {
+                latitude: this.field.lat || 33.450701,
+                longitude: this.field.lng || 126.570667,
+                address: '',
+                address_1level: '',
+                address_2level: '',
+                address_3level: '',
+                address_others: '',
+            },
             useAddress: false,
             useLatLng: false,
             map: null,
@@ -138,9 +197,8 @@ export default {
 
                 this.geocoder.coord2Address(latlng.getLng(), latlng.getLat(), (results, status) => {
                     if (status === daum.maps.services.Status.OK && results[0]) {
-                        let address = !!results[0].road_address ? `[도로명 주소] ${results[0].road_address.address_name}, ` : '';
-                        address += `[지번 주소] ${results[0].address.address_name}`;
-                        this.addressData.address = address;
+                        this.parseAddress(results[0]);
+
                         this.value = !!results[0].road_address ? results[0].road_address.address_name : results[0].address.address_name;
                         this.useAddress = true;
                         this.useLatLng = true;
@@ -168,12 +226,8 @@ export default {
             this.geocoder.addressSearch(this.value, (results, status) => {
                 if (status === daum.maps.services.Status.OK) {
                     if (results[0]) {
-                        let address = !!results[0].road_address ? `[도로명 주소] ${results[0].road_address.address_name}, ` : '';
-                        address += `[지번 주소] ${results[0].address.address_name}`;
+                        this.parseAddress(results[0]);
 
-                        this.addressData.latitude = results[0].y;
-                        this.addressData.longitude = results[0].x;
-                        this.addressData.address = address;
                         this.useAddress = true;
                         this.useLatLng = true;
 
@@ -185,6 +239,23 @@ export default {
                     window.alert(`주소 검색이 다음 이유로 실패했습니다. ${status}`);
                 }
             });
+        },
+
+        parseAddress(data) {
+            let address = !!data.road_address ? `[도로명 주소] ${data.road_address.address_name}, ` : '';
+            address += `[지번 주소] ${data.address.address_name}`;
+
+            if (data.x && data.y) {
+                this.addressData.latitude = data.y;
+                this.addressData.longitude = data.x;
+            }
+            this.addressData.address = address;
+            this.addressData.address_1level = data.address.region_1depth_name;
+            this.addressData.address_2level = data.address.region_2depth_name;
+            this.addressData.address_3level = data.address.region_3depth_name;
+            this.addressData.address_others = data.address.main_address_no + (
+                data.address.sub_address_no ? `-${data.address.sub_address_no}` : ''
+            );
         },
 
         /*
@@ -200,6 +271,10 @@ export default {
         fill(formData) {
             const data = {
                 address: this.useAddress ? this.value || '' : this.field.value,
+                address_1level: this.useAddress ? this.addressData.address_1level || '' : '',
+                address_2level: this.useAddress ? this.addressData.address_2level || '' : '',
+                address_3level: this.useAddress ? this.addressData.address_3level || '' : '',
+                address_others: this.useAddress ? this.addressData.others || '' : '',
                 latitude: this.useLatLng ? this.addressData.latitude || '' : this.field.lat,
                 longitude: this.useLatLng ? this.addressData.longitude || '' : this.field.lng,
             };
