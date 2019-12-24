@@ -29,15 +29,15 @@ class KakaoAddress extends Field
                 $address = json_decode($value);
 
                 $this->withMeta([
-                    'lat' => $address->latitude,
-                    'lng' => $address->longitude,
-                    'address_1level' => $address->address_1level,
-                    'address_2level' => $address->address_2level,
-                    'address_3level' => $address->address_3level,
-                    'address_others' => $address->address_others,
+                    'lat' => data_get($address, 'latitude', ''),
+                    'lng' => data_get($address, 'longitude', ''),
+                    'address_1level' => data_get($address, 'address_1level', ''),
+                    'address_2level' => data_get($address, 'address_2level', ''),
+                    'address_3level' => data_get($address, 'address_3level', ''),
+                    'address_others' => data_get($address, 'address_others', '')
                 ]);
 
-                return $address->address;
+                return data_get($address, 'address', '');
             }
 
             return $value;
