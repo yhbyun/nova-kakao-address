@@ -29,8 +29,13 @@ export default {
     props: ['resource', 'resourceName', 'resourceId', 'field'],
 
     data: function () {
+        const id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+
         return {
-            mapName: this.name + "-map",
+            mapName: id + "-map",
         }
     },
 
