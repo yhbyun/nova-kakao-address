@@ -145,15 +145,14 @@ export default {
 
         return {
             mapName: id + "-map",
-            address: '',
             addressData: {
                 latitude: this.field.lat || 33.450701,
                 longitude: this.field.lng || 126.570667,
-                address: '',
-                address_1level: '',
-                address_2level: '',
-                address_3level: '',
-                address_others: '',
+                address: '', // for displaying "전체 주소"
+                address_1level: this.field.address_1level,
+                address_2level: this.field.address_2level,
+                address_3level: this.field.address_3level,
+                address_others: this.field.address_others,
             },
             useAddress: false,
             useLatLng: false,
@@ -276,10 +275,10 @@ export default {
         fill(formData) {
             const data = {
                 address: this.useAddress ? this.value || '' : this.field.value,
-                address_1level: this.useAddress ? this.addressData.address_1level || '' : '',
-                address_2level: this.useAddress ? this.addressData.address_2level || '' : '',
-                address_3level: this.useAddress ? this.addressData.address_3level || '' : '',
-                address_others: this.useAddress ? this.addressData.others || '' : '',
+                address_1level: this.useAddress ? this.addressData.address_1level || '' : this.field.address_1level,
+                address_2level: this.useAddress ? this.addressData.address_2level || '' : this.field.address_2level,
+                address_3level: this.useAddress ? this.addressData.address_3level || '' : this.field.address_3level,
+                address_others: this.useAddress ? this.addressData.address_others || '' : this.field.address_others,
                 latitude: this.useLatLng ? this.addressData.latitude || '' : this.field.lat,
                 longitude: this.useLatLng ? this.addressData.longitude || '' : this.field.lng,
             };
