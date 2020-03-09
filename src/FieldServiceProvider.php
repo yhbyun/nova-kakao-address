@@ -15,8 +15,16 @@ class FieldServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishes([
+            __DIR__ . '/config/nova-kakao-address.php' => config_path('nova-kakao-address.php'),
+        ], 'nova-kakao-address');
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/nova-kakao-address.php', 'nova-kakao-address'
+        );
+
         Nova::serving(function (ServingNova $event) {
-            $key = env('KAKAO_API_KEY');
+            $key = config('nova-kakao-address.kakao-api-key');
             Nova::script('kakao-maps', "https://dapi.kakao.com/v2/maps/sdk.js?appkey={$key}&libraries=services");
             Nova::script('kakao-address', __DIR__ . '/../dist/js/field.js');
             Nova::style('kakao-address', __DIR__ . '/../dist/css/field.css');

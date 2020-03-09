@@ -7,6 +7,8 @@
 
 ```sh
 $ composer require yhbyun/nova-kakao-address
+# config 파일을 수정하려면
+$ php artisan vendor:publish --tag=nova-kakao-address
 ```
 
 `.env` 파일에 카카오 API 키 추가
